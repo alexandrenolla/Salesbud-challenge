@@ -1,0 +1,71 @@
+services:
+  postgresql:
+    container_name: "db-playbook-insights"
+    hostname: "db-playbook-insights"
+    image: postgres:latest
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${TYPEORM_USERNAME} -d ${TYPEORM_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: ${TYPEORM_USERNAME}
+      POSTGRES_PASSWORD: ${TYPEORM_PASSWORD}
+      POSTGRES_DB: ${TYPEORM_DATABASE}
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+  backend:
+    container_name: "playbook-insights-backend"
+    hostname: "playbook-insights-backend"
+    build:
+      context: ./backend
+    entrypoint: sh -c "npm install --legacy-peer-deps && npm run start:dev"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - DATABASE_URL=postgres://${TYPEORM_USERNAME}:${TYPEORM_PASSWORD}@postgresql:5432/${TYPEORM_DATABASE}
+      - TYPEORM_USERNAME=${TYPEORM_USERNAME}
+      - TYPEORM_PASSWORD=${TYPEORM_PASSWORD}
+      - TYPEORM_DATABASE=${TYPEORM_DATABASE}
+      - TYPEORM_HOST=postgresql
+      - TYPEORM_PORT=5432
+      - TYPEORM_SYNCHRONIZE=${TYPEORM_SYNCHRONIZE}
+      - TYPEORM_LOGGING=${TYPEORM_LOGGING}
+      - TYPEORM_MIGRATION_TABLE=${TYPEORM_MIGRATION_TABLE}
+      - TYPEORM_MIGRATION=${TYPEORM_MIGRATION}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - LLM_MODEL=${LLM_MODEL}
+      - THROTTLE_TTL=${THROTTLE_TTL}
+      - THROTTLE_LIMIT=${THROTTLE_LIMIT}
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    ports:
+      - 3001:3001
+
+  frontend:
+    container_name: "playbook-insights-frontend"
+    hostname: "playbook-insights-frontend"
+    build:
+      context: ./frontend
+    entrypoint: sh -c "npm install && npm run dev -- --host"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - VITE_API_URL=${VITE_API_URL}
+      - DOCKER_ENV=true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    ports:
+      - 5173:5173
+
+volumes:
+  pgdata:
