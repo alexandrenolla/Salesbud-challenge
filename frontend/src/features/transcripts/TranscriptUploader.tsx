@@ -1,5 +1,5 @@
 import { useState, useRef, DragEvent } from "react";
-import { Plus, Trash2, Send, Upload, FileText, CheckCircle } from "lucide-react";
+import { Plus, Trash2, Send, Upload, FileText, CheckCircle, Music, Loader2 } from "lucide-react";
 import { Button, Card } from "@/components";
 import { TranscriptInput } from "@/types";
 import { uploadTranscript } from "@/lib/api";
@@ -18,8 +18,21 @@ export function TranscriptUploader({ onAnalyze, isLoading }: TranscriptUploaderP
     { id: "1", content: "" },
   ]);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [transcribingId, setTranscribingId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+
+  const isAudioFile = (filename: string): boolean => {
+    return FILE_UPLOAD.AUDIO_EXTENSIONS.some((ext) =>
+      filename.toLowerCase().endsWith(ext)
+    );
+  };
+
+  const getMaxFileSize = (filename: string): number => {
+    return isAudioFile(filename)
+      ? FILE_UPLOAD.MAX_AUDIO_SIZE_BYTES
+      : FILE_UPLOAD.MAX_TEXT_SIZE_BYTES;
+  };
 
   const addTranscript = () => {
     setTranscripts([
@@ -49,23 +62,47 @@ export function TranscriptUploader({ onAnalyze, isLoading }: TranscriptUploaderP
       file.name.toLowerCase().endsWith(ext)
     );
     if (!isAllowedExtension) {
-      toast.error("Apenas arquivos .txt são permitidos");
+      toast.error(
+        `Formatos permitidos: ${FILE_UPLOAD.ALLOWED_EXTENSIONS.join(", ")}`
+      );
       return;
     }
 
+    const maxSize = getMaxFileSize(file.name);
+    if (file.size > maxSize) {
+      toast.error(`Arquivo muito grande. Máximo: ${maxSize / 1024 / 1024}MB`);
+      return;
+    }
+
+    const isAudio = isAudioFile(file.name);
     setUploadingId(id);
+    if (isAudio) {
+      setTranscribingId(id);
+    }
 
     try {
       const result = await uploadTranscript(file);
       setTranscripts(
         transcripts.map((t) =>
-          t.id === id ? { ...t, content: result.content, filename: result.filename } : t
+          t.id === id
+            ? {
+                ...t,
+                content: result.content,
+                filename: result.filename,
+                isAudio,
+                isTranscribed: result.isTranscribed,
+              }
+            : t
         )
       );
+      if (isAudio) {
+        toast.success("Áudio transcrito com sucesso!");
+      }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Erro ao fazer upload");
     } finally {
       setUploadingId(null);
+      setTranscribingId(null);
     }
   };
 
@@ -120,8 +157,8 @@ export function TranscriptUploader({ onAnalyze, isLoading }: TranscriptUploaderP
       <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-900">Adicionar Transcrições</h2>
         <p className="mt-2 text-gray-600">
-          Cole as transcrições ou faça upload de arquivos .txt. Mínimo de{" "}
-          {VALIDATION.MIN_TRANSCRIPTS_COUNT} transcrições ({VALIDATION.MIN_TRANSCRIPT_LENGTH}+
+          Cole as transcrições, faça upload de arquivos .txt ou áudio (.mp3, .wav, .m4a).
+          Mínimo de {VALIDATION.MIN_TRANSCRIPTS_COUNT} transcrições ({VALIDATION.MIN_TRANSCRIPT_LENGTH}+
           caracteres cada).
         </p>
       </div>
@@ -175,8 +212,15 @@ export function TranscriptUploader({ onAnalyze, isLoading }: TranscriptUploaderP
                       </label>
                       {transcript.filename && (
                         <span className="text-xs text-gray-500 flex items-center gap-1">
-                          <FileText className="w-3 h-3" />
+                          {transcript.isAudio ? (
+                            <Music className="w-3 h-3 text-purple-500" />
+                          ) : (
+                            <FileText className="w-3 h-3" />
+                          )}
                           {transcript.filename}
+                          {transcript.isTranscribed && (
+                            <span className="text-purple-500">(transcrito)</span>
+                          )}
                         </span>
                       )}
                     </div>
@@ -212,10 +256,21 @@ export function TranscriptUploader({ onAnalyze, isLoading }: TranscriptUploaderP
                       </p>
                     </div>
                   )}
+                  {transcribingId === transcript.id && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-purple-50/90 rounded-lg z-10">
+                      <Loader2 className="w-8 h-8 text-purple-500 animate-spin mb-2" />
+                      <p className="text-sm font-medium text-purple-600">
+                        Transcrevendo áudio...
+                      </p>
+                      <p className="text-xs text-purple-400 mt-1">
+                        Isso pode levar alguns segundos
+                      </p>
+                    </div>
+                  )}
                   <textarea
                     value={transcript.content}
                     onChange={(e) => updateContent(transcript.id, e.target.value)}
-                    placeholder="Cole a transcrição ou arraste um arquivo .txt..."
+                    placeholder="Cole a transcrição ou arraste um arquivo (.txt ou áudio)..."
                     rows={6}
                     className="w-full px-4 py-3 bg-transparent border-none rounded-lg resize-none outline-none placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
@@ -241,7 +296,7 @@ export function TranscriptUploader({ onAnalyze, isLoading }: TranscriptUploaderP
                   <div>
                     <input
                       type="file"
-                      accept=".txt"
+                      accept=".txt,.mp3,.wav,.m4a"
                       ref={(el) => (fileInputRefs.current[transcript.id] = el)}
                       onChange={(e) => handleFileInputChange(transcript.id, e)}
                       className="hidden"
@@ -254,7 +309,7 @@ export function TranscriptUploader({ onAnalyze, isLoading }: TranscriptUploaderP
                       isLoading={uploadingId === transcript.id}
                     >
                       <Upload className="w-4 h-4" />
-                      Upload .txt
+                      Upload arquivo
                     </Button>
                   </div>
                 </div>

@@ -49,6 +49,7 @@ export interface UploadResult {
   detectedOutcome: Outcome;
   confidence: Confidence;
   reason: string;
+  isTranscribed?: boolean;
 }
 
 // ═══════════════════════════════════════════

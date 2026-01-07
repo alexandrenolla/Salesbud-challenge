@@ -30,9 +30,21 @@ export const TOAST = {
  * File upload constraints
  */
 export const FILE_UPLOAD = {
-  /** Allowed file extensions */
-  ALLOWED_EXTENSIONS: [".txt"] as const,
+  /** Allowed text file extensions */
+  TEXT_EXTENSIONS: [".txt"] as const,
 
-  /** Maximum file size in bytes (5MB) */
+  /** Allowed audio file extensions */
+  AUDIO_EXTENSIONS: [".mp3", ".wav", ".m4a"] as const,
+
+  /** All allowed file extensions */
+  ALLOWED_EXTENSIONS: [".txt", ".mp3", ".wav", ".m4a"] as const,
+
+  /** Maximum text file size in bytes (5MB) */
+  MAX_TEXT_SIZE_BYTES: 5 * 1024 * 1024,
+
+  /** Maximum audio file size in bytes (25MB) */
+  MAX_AUDIO_SIZE_BYTES: 25 * 1024 * 1024,
+
+  /** @deprecated Use MAX_TEXT_SIZE_BYTES instead */
   MAX_SIZE_BYTES: 5 * 1024 * 1024,
 } as const;

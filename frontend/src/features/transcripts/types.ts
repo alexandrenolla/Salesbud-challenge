@@ -3,4 +3,6 @@ export interface TranscriptDraft {
   id: string;
   content: string;
   filename?: string;
+  isAudio?: boolean;
+  isTranscribed?: boolean;
 }

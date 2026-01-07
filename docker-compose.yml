@@ -40,6 +40,7 @@ services:
       - LLM_MODEL=${LLM_MODEL}
       - THROTTLE_TTL=${THROTTLE_TTL}
       - THROTTLE_LIMIT=${THROTTLE_LIMIT}
+      - ASSEMBLYAI_API_KEY=${ASSEMBLYAI_API_KEY}
     volumes:
       - ./backend:/app
       - /app/node_modules

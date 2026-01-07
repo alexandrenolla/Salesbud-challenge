@@ -1,18 +1,43 @@
 import { Injectable, Logger, BadRequestException } from "@nestjs/common";
+import * as path from "path";
 import { OutcomeDetectorService } from "src/outcome-detector/outcome-detector.service";
-import { MIN_FILE_CONTENT_LENGTH } from "src/utils/constants";
+import { LlmService } from "src/llm/llm.service";
+import {
+  MIN_FILE_CONTENT_LENGTH,
+  ALLOWED_AUDIO_EXTENSIONS,
+} from "src/utils/constants";
 import { UploadResponseDto } from "./dto/upload-response.dto";
 
 @Injectable()
 export class UploadsService {
   private readonly logger = new Logger(UploadsService.name);
 
-  constructor(private readonly outcomeDetectorService: OutcomeDetectorService) {}
+  constructor(
+    private readonly outcomeDetectorService: OutcomeDetectorService,
+    private readonly llmService: LlmService,
+  ) {}
 
   async processUpload(file: Express.Multer.File): Promise<UploadResponseDto> {
-    this.logger.log(`Processing file: ${file.originalname} (${file.size} bytes)`);
+    this.logger.log(
+      `Processing file: ${file.originalname} (${file.size} bytes)`,
+    );
 
-    const content = file.buffer.toString("utf-8").trim();
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isAudio = ALLOWED_AUDIO_EXTENSIONS.includes(ext);
+
+    let content: string;
+
+    if (isAudio) {
+      this.logger.log(`Transcribing audio file: ${file.originalname}`);
+      // AssemblyAI returns text with speaker diarization (Speaker A, Speaker B)
+      const transcription = await this.llmService.transcribeAudio(
+        file.buffer,
+        file.originalname,
+      );
+      content = transcription.text;
+    } else {
+      content = file.buffer.toString("utf-8").trim();
+    }
 
     if (content.length < MIN_FILE_CONTENT_LENGTH) {
       throw new BadRequestException(
@@ -28,6 +53,7 @@ export class UploadsService {
       detectedOutcome: detection.outcome,
       confidence: detection.confidence,
       reason: detection.reason,
+      isTranscribed: isAudio,
     };
   }
 }
