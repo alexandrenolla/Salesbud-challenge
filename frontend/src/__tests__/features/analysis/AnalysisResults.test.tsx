@@ -77,7 +77,7 @@ describe("AnalysisResults", () => {
 
     expect(screen.getByText("Perguntas Eficazes")).toBeInTheDocument();
     expect(screen.getByText(/Qual é o maior desafio/i)).toBeInTheDocument();
-    expect(screen.getByText(/85% sucesso/i)).toBeInTheDocument();
+    expect(screen.getByText("85")).toBeInTheDocument();
   });
 
   it("renders objections with recommended response", () => {

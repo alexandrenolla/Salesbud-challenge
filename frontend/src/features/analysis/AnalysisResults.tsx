@@ -169,6 +169,7 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
         <div className="space-y-4">
           {objections.map((objection) => {
             const invalidResponses = objection.unsuccessfulResponses.filter(r => r?.trim());
+            const hasRecommendedResponse = objection.recommendedResponse?.trim();
             return (
               <div
                 key={`objection-${objection.objection.slice(0, 30)}`}
@@ -179,14 +180,16 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">{objection.objection}</p>
 
-                    <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                      <p className="text-xs font-medium text-green-800 uppercase tracking-wide">
-                        Resposta Recomendada
-                      </p>
-                      <p className="mt-1 text-sm text-gray-700">
-                        {objection.recommendedResponse}
-                      </p>
-                    </div>
+                    {hasRecommendedResponse && (
+                      <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <p className="text-xs font-medium text-green-800 uppercase tracking-wide">
+                          Resposta Recomendada
+                        </p>
+                        <p className="mt-1 text-sm text-gray-700">
+                          {objection.recommendedResponse}
+                        </p>
+                      </div>
+                    )}
 
                     {invalidResponses.length > 0 && (
                       <div className="mt-2 p-3 bg-red-50 rounded-lg border border-red-200">
