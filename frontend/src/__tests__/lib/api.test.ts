@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import axios from "axios";
-import { Outcome, Confidence } from "@/types";
 
 // Mock axios
 vi.mock("axios", () => ({
   default: {
     create: vi.fn(() => ({
       post: vi.fn(),
+      get: vi.fn(),
       interceptors: {
         response: {
           use: vi.fn(),
@@ -19,6 +19,7 @@ vi.mock("axios", () => ({
 describe("API Service", () => {
   let mockAxiosInstance: {
     post: ReturnType<typeof vi.fn>;
+    get: ReturnType<typeof vi.fn>;
     interceptors: { response: { use: ReturnType<typeof vi.fn> } };
   };
 
@@ -26,6 +27,7 @@ describe("API Service", () => {
     vi.clearAllMocks();
     mockAxiosInstance = {
       post: vi.fn(),
+      get: vi.fn(),
       interceptors: {
         response: {
           use: vi.fn(),
@@ -37,8 +39,8 @@ describe("API Service", () => {
 
   describe("createAnalysis", () => {
     const mockTranscripts = [
-      { content: "a".repeat(100), outcome: Outcome.WON },
-      { content: "b".repeat(100), outcome: Outcome.LOST },
+      { content: "a".repeat(100) },
+      { content: "b".repeat(100) },
     ];
 
     const mockResponse = {
@@ -56,6 +58,7 @@ describe("API Service", () => {
       const mockPost = vi.fn().mockResolvedValue(mockResponse);
       vi.mocked(axios.create).mockReturnValue({
         post: mockPost,
+        get: vi.fn(),
         interceptors: { response: { use: vi.fn() } },
       } as never);
 
@@ -70,6 +73,7 @@ describe("API Service", () => {
       const mockPost = vi.fn().mockResolvedValue(mockResponse);
       vi.mocked(axios.create).mockReturnValue({
         post: mockPost,
+        get: vi.fn(),
         interceptors: { response: { use: vi.fn() } },
       } as never);
 
@@ -80,47 +84,66 @@ describe("API Service", () => {
     });
   });
 
-  describe("uploadTranscript", () => {
-    const mockFile = new File(["test content"], "test.txt", { type: "text/plain" });
+  describe("createBatchUpload", () => {
+    const mockFiles = [
+      new File(["content 1"], "file1.txt", { type: "text/plain" }),
+      new File(["content 2"], "file2.txt", { type: "text/plain" }),
+    ];
 
-    const mockUploadResponse = {
+    const mockResponse = {
       data: {
-        content: "test content",
-        filename: "test.txt",
-        detectedOutcome: Outcome.WON,
-        confidence: Confidence.HIGH,
-        reason: "Client showed interest",
+        jobId: "test-job-id",
+        status: "pending",
+        totalFiles: 2,
       },
     };
 
-    it("sends POST request with FormData to /uploads", async () => {
+    it("sends POST request with FormData to /batch-upload", async () => {
       vi.resetModules();
-      const mockPost = vi.fn().mockResolvedValue(mockUploadResponse);
+      const mockPost = vi.fn().mockResolvedValue(mockResponse);
       vi.mocked(axios.create).mockReturnValue({
         post: mockPost,
+        get: vi.fn(),
         interceptors: { response: { use: vi.fn() } },
       } as never);
 
-      const { uploadTranscript } = await import("@/lib/api");
-      await uploadTranscript(mockFile);
+      const { createBatchUpload } = await import("@/lib/api");
+      await createBatchUpload(mockFiles);
 
-      expect(mockPost).toHaveBeenCalledWith("/uploads", expect.any(FormData), {
+      expect(mockPost).toHaveBeenCalledWith("/batch-uploads", expect.any(FormData), {
         headers: { "Content-Type": "multipart/form-data" },
       });
     });
 
     it("returns data directly from response", async () => {
       vi.resetModules();
-      const mockPost = vi.fn().mockResolvedValue(mockUploadResponse);
+      const mockPost = vi.fn().mockResolvedValue(mockResponse);
       vi.mocked(axios.create).mockReturnValue({
         post: mockPost,
+        get: vi.fn(),
         interceptors: { response: { use: vi.fn() } },
       } as never);
 
-      const { uploadTranscript } = await import("@/lib/api");
-      const result = await uploadTranscript(mockFile);
+      const { createBatchUpload } = await import("@/lib/api");
+      const result = await createBatchUpload(mockFiles);
 
-      expect(result).toEqual(mockUploadResponse.data);
+      expect(result).toEqual(mockResponse.data);
+    });
+  });
+
+  describe("getBatchUploadEventsUrl", () => {
+    it("returns correct SSE URL", async () => {
+      vi.resetModules();
+      vi.mocked(axios.create).mockReturnValue({
+        post: vi.fn(),
+        get: vi.fn(),
+        interceptors: { response: { use: vi.fn() } },
+      } as never);
+
+      const { getBatchUploadEventsUrl } = await import("@/lib/api");
+      const url = getBatchUploadEventsUrl("test-job-id");
+
+      expect(url).toContain("/batch-uploads/test-job-id/events");
     });
   });
 });

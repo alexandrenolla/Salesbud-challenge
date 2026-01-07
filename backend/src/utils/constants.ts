@@ -23,8 +23,10 @@ export const DEFAULT_LLM_TEMPERATURE = 0.7;
 export const DEFAULT_LLM_MAX_TOKENS = 4096;
 
 // Pagination defaults
-export const DEFAULT_PAGE = 0;
 export const DEFAULT_LIMIT = 50;
 
 // API Version
 export const DEFAULT_VERSION = "1";
+
+// Batch processing
+export const BATCH_CONCURRENCY_LIMIT = 3;

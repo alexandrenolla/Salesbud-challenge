@@ -1,11 +1,13 @@
-import { Injectable, Logger, BadRequestException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import {
+  Injectable,
+  Logger,
+  BadRequestException,
   HttpException,
   HttpStatus,
   UnauthorizedException,
   ServiceUnavailableException,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import Groq from "groq-sdk";
 import { AssemblyAI, TranscriptUtterance } from "assemblyai";
 import * as fs from "fs";
@@ -17,18 +19,19 @@ import {
   DEFAULT_LLM_TEMPERATURE,
   DEFAULT_LLM_MAX_TOKENS,
 } from "src/utils/constants";
+import { extractErrorMessage } from "src/utils/helpers";
 
 @Injectable()
 export class LlmService {
   private readonly logger = new Logger(LlmService.name);
   private readonly client: Groq;
   private readonly model: string;
-  private readonly assemblyAI: AssemblyAI | null = null;
+  private readonly assemblyAI?: AssemblyAI;
 
   constructor(private readonly configService: ConfigService) {
     const groqKey = process.env.GROQ_API_KEY;
     if (!groqKey) {
-      throw new Error("GROQ_API_KEY is not configured");
+      throw new ServiceUnavailableException("GROQ_API_KEY is not configured");
     }
 
     this.client = new Groq({ apiKey: groqKey });
@@ -59,7 +62,7 @@ export class LlmService {
       return text;
     } catch (error: unknown) {
       const duration = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const errorMessage = extractErrorMessage(error);
       this.logger.error(`LLM API error after ${duration}ms: ${errorMessage}`);
 
       const status = this.getErrorStatus(error);
@@ -104,7 +107,7 @@ export class LlmService {
     filename: string,
   ): Promise<{ text: string }> {
     if (!this.assemblyAI) {
-      throw new Error("ASSEMBLYAI_API_KEY is not configured");
+      throw new ServiceUnavailableException("ASSEMBLYAI_API_KEY is not configured");
     }
 
     const startTime = Date.now();
@@ -151,8 +154,7 @@ export class LlmService {
       }
 
       const duration = Date.now() - startTime;
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
+      const errorMessage = extractErrorMessage(error);
       this.logger.error(
         `AssemblyAI API error after ${duration}ms: ${errorMessage}`,
       );

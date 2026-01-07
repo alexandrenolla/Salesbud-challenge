@@ -17,7 +17,6 @@ import {
 import { AnalysesService } from "./analyses.service";
 import { CreateAnalysisDto } from "./dto/create-analysis.dto";
 import { AnalysisResponseDto } from "./dto/analysis-response.dto";
-import { DeleteResult } from "typeorm";
 
 @Controller({ path: "analyses", version: "1" })
 @ApiTags("analyses")
@@ -81,7 +80,6 @@ export class AnalysesController {
   @ApiResponse({
     status: 200,
     description: "Analysis deleted successfully",
-    type: DeleteResult
   })
   async delete(@Param("id") id: string): Promise<void> {
     return this.analysesService.delete(id);

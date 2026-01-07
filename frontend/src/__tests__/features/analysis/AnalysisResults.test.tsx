@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AnalysisResults } from "@/features/analysis";
-import { AnalysisResult, ImpactLevel } from "@/types";
+import { AnalysisResult } from "@/types";
 
 const mockResult: AnalysisResult = {
   summary: {
@@ -15,20 +15,17 @@ const mockResult: AnalysisResult = {
     {
       quote: "Isso é exatamente o que precisamos!",
       context: "Cliente demonstrou entusiasmo com a solução",
-      speakerTurn: "client",
-      impactLevel: ImpactLevel.HIGH,
+      impactLevel: "high",
     },
     {
       quote: "Interessante...",
       context: "Cliente mostrou interesse moderado",
-      speakerTurn: "client",
-      impactLevel: ImpactLevel.MEDIUM,
+      impactLevel: "medium",
     },
   ],
   effectiveQuestions: [
     {
       question: "Qual é o maior desafio que você enfrenta hoje?",
-      avgResponseTime: "15s",
       successRate: 85,
       suggestedTiming: "Início da reunião",
     },
@@ -36,7 +33,6 @@ const mockResult: AnalysisResult = {
   objections: [
     {
       objection: "O preço está muito alto",
-      frequency: 3,
       successfulResponses: ["Oferecemos parcelamento", "ROI em 6 meses"],
       unsuccessfulResponses: ["Desconto de 5%"],
       recommendedResponse: "Destaque o ROI e ofereça parcelamento",

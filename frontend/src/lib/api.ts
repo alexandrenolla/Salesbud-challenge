@@ -1,8 +1,11 @@
 import axios from "axios";
-import { TranscriptInput, AnalysisResult, UploadResult } from "@/types";
+import { TranscriptInput, AnalysisResult } from "@/types";
+import { BatchJobResponse } from "@/features/batch-uploads/types";
+
+export const API_BASE_URL = "/api/v1";
 
 const api = axios.create({
-  baseURL: "/api/v1",
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -24,13 +27,25 @@ export async function createAnalysis(
   return data;
 }
 
-export async function uploadTranscript(file: File): Promise<UploadResult> {
-  const formData = new FormData();
-  formData.append("file", file);
+export async function getAnalysis(id: string): Promise<AnalysisResult> {
+  const { data } = await api.get<AnalysisResult>(`/analyses/${id}`);
+  return data;
+}
 
-  const { data } = await api.post<UploadResult>("/uploads", formData, {
+// Batch Upload API
+export async function createBatchUpload(files: File[]): Promise<BatchJobResponse> {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append("files", file);
+  });
+
+  const { data } = await api.post<BatchJobResponse>("/batch-uploads", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
   return data;
+}
+
+export function getBatchUploadEventsUrl(jobId: string): string {
+  return `${API_BASE_URL}/batch-uploads/${jobId}/events`;
 }

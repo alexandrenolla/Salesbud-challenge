@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
-import { TranscriptInput } from "@/types";
+import { useState } from "react";
+import { TranscriptInput, AnalysisResult } from "@/types";
 import { createAnalysis } from "@/lib/api";
-import type { AnalysisResult } from "./types";
+import { getErrorMessage } from "@/lib/helpers";
 
 interface UseAnalysisReturn {
   result: AnalysisResult | null;
@@ -16,7 +16,7 @@ export function useAnalysis(): UseAnalysisReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const analyze = useCallback(async (transcripts: TranscriptInput[]) => {
+  const analyze = async (transcripts: TranscriptInput[]) => {
     setIsLoading(true);
     setError(null);
 
@@ -24,17 +24,16 @@ export function useAnalysis(): UseAnalysisReturn {
       const data = await createAnalysis(transcripts);
       setResult(data);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "An error occurred";
-      setError(message);
+      setError(getErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
-  const reset = useCallback(() => {
+  const reset = () => {
     setResult(null);
     setError(null);
-  }, []);
+  };
 
   return { result, isLoading, error, analyze, reset };
 }

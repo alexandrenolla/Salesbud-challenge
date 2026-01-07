@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useAnalysis } from "@/features/analysis";
 import * as api from "@/lib/api";
-import { Outcome } from "@/types";
 
 // Mock the API module
 vi.mock("@/lib/api", () => ({
@@ -23,8 +22,8 @@ const mockAnalysisResult = {
 };
 
 const mockTranscripts = [
-  { content: "a".repeat(100), outcome: Outcome.WON },
-  { content: "b".repeat(100), outcome: Outcome.LOST },
+  { content: "a".repeat(100) },
+  { content: "b".repeat(100) },
 ];
 
 describe("useAnalysis", () => {
@@ -118,8 +117,20 @@ describe("useAnalysis", () => {
     expect(result.current.isLoading).toBe(false);
   });
 
-  it("handles unknown error type", async () => {
-    vi.mocked(api.createAnalysis).mockRejectedValue("Unknown error");
+  it("handles string error type", async () => {
+    vi.mocked(api.createAnalysis).mockRejectedValue("String error message");
+
+    const { result } = renderHook(() => useAnalysis());
+
+    await act(async () => {
+      await result.current.analyze(mockTranscripts);
+    });
+
+    expect(result.current.error).toBe("String error message");
+  });
+
+  it("handles unknown error type with default message", async () => {
+    vi.mocked(api.createAnalysis).mockRejectedValue({ code: 500 });
 
     const { result } = renderHook(() => useAnalysis());
 

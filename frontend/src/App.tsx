@@ -1,10 +1,19 @@
-import { BookOpen, AlertCircle, Sparkles } from "lucide-react";
-import { LoadingSpinner } from "@/components";
-import { TranscriptUploader } from "@/features/transcripts";
-import { AnalysisResults, useAnalysis } from "@/features/analysis";
+import { useState, useCallback } from "react";
+import { BookOpen, Sparkles } from "lucide-react";
+import { BatchUploader } from "@/features/batch-uploads";
+import { AnalysisResults } from "@/features/analysis";
+import { AnalysisResult } from "@/types";
 
 function App() {
-  const { result, isLoading, error, analyze, reset } = useAnalysis();
+  const [result, setResult] = useState<AnalysisResult | null>(null);
+
+  const handleComplete = useCallback((analysisResult: AnalysisResult) => {
+    setResult(analysisResult);
+  }, []);
+
+  const handleReset = () => {
+    setResult(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -36,42 +45,10 @@ function App() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-5xl mx-auto px-4 py-8 w-full">
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 animate-fade-in">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="font-medium text-red-800">Ocorreu um erro</p>
-              <p className="text-sm text-red-700 mt-1">{error}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
-            <div className="relative">
-              <LoadingSpinner size="lg" />
-              <Sparkles className="absolute -top-1 -right-1 w-5 h-5 text-primary-500 animate-pulse" />
-            </div>
-            <p className="mt-6 text-lg font-medium text-gray-700">
-              Analisando as transcrições...
-            </p>
-            <p className="text-sm text-gray-500 mt-1">
-              Nossa IA está processando os dados. Isso pode levar alguns segundos.
-            </p>
-          </div>
-        )}
-
-        {/* Results or Uploader */}
-        {!isLoading && (
-          <>
-            {result ? (
-              <AnalysisResults result={result} onReset={reset} />
-            ) : (
-              <TranscriptUploader onAnalyze={analyze} isLoading={isLoading} />
-            )}
-          </>
+        {result ? (
+          <AnalysisResults result={result} onReset={handleReset} />
+        ) : (
+          <BatchUploader onComplete={handleComplete} />
         )}
       </main>
 
@@ -86,7 +63,7 @@ function App() {
               Powered by AI
             </span>
             <span className="text-gray-300">|</span>
-            <span className="text-xs text-gray-400">v1.0.0</span>
+            <span className="text-xs text-gray-400">v2.0.0</span>
           </div>
         </div>
       </footer>

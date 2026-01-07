@@ -15,7 +15,7 @@ import {
   MIN_TRANSCRIPT_LENGTH,
 } from "src/utils/constants";
 
-class TranscriptItemDto {
+export class TranscriptItemDto {
   @IsNotEmpty({ message: "Content is required" })
   @IsString()
   @MinLength(MIN_TRANSCRIPT_LENGTH, {

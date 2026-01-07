@@ -2,9 +2,6 @@
  * Validation constants for transcript analysis
  */
 export const VALIDATION = {
-  /** Minimum character count for a valid transcript */
-  MIN_TRANSCRIPT_LENGTH: 100,
-
   /** Minimum number of transcripts required for analysis */
   MIN_TRANSCRIPTS_COUNT: 2,
 
@@ -19,20 +16,9 @@ export const VALIDATION = {
 } as const;
 
 /**
- * Toast message defaults
- */
-export const TOAST = {
-  /** Default duration for toast messages in milliseconds */
-  DEFAULT_DURATION: 5000,
-} as const;
-
-/**
  * File upload constraints
  */
 export const FILE_UPLOAD = {
-  /** Allowed text file extensions */
-  TEXT_EXTENSIONS: [".txt"] as const,
-
   /** Allowed audio file extensions */
   AUDIO_EXTENSIONS: [".mp3", ".wav", ".m4a"] as const,
 
@@ -44,7 +30,37 @@ export const FILE_UPLOAD = {
 
   /** Maximum audio file size in bytes (25MB) */
   MAX_AUDIO_SIZE_BYTES: 25 * 1024 * 1024,
+} as const;
 
-  /** @deprecated Use MAX_TEXT_SIZE_BYTES instead */
-  MAX_SIZE_BYTES: 5 * 1024 * 1024,
+/**
+ * SSE (Server-Sent Events) constants
+ */
+export const SSE = {
+  /** Maximum number of reconnection attempts before giving up */
+  MAX_RECONNECT_ATTEMPTS: 3,
+
+  /** Base delay in ms for exponential backoff reconnection */
+  RECONNECT_BASE_DELAY_MS: 1000,
+} as const;
+
+/**
+ * Toast notification constants
+ */
+export const TOAST = {
+  /** Default duration in ms before auto-dismiss */
+  DEFAULT_DURATION_MS: 5000,
+
+  /** Exit animation duration in ms */
+  EXIT_ANIMATION_MS: 200,
+} as const;
+
+/**
+ * Error messages
+ */
+export const MESSAGES = {
+  /** SSE connection lost error */
+  CONNECTION_LOST: "Conexão perdida. Por favor, recarregue a página.",
+
+  /** Minimum files required for batch upload */
+  MIN_FILES_REQUIRED: "Mínimo de 2 arquivos necessários para análise comparativa",
 } as const;

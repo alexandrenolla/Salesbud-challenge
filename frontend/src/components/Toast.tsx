@@ -1,5 +1,7 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { TOAST } from "@/constants/validation";
 
 export type ToastType = "success" | "error" | "warning" | "info";
 
@@ -45,13 +47,15 @@ const progressStyles = {
 
 function Toast({ toast, onClose }: ToastProps) {
   const Icon = icons[toast.type];
-  const duration = toast.duration || 5000;
+  const duration = toast.duration || TOAST.DEFAULT_DURATION_MS;
   const [isExiting, setIsExiting] = useState(false);
+
+  const toastIdRef = useRef(toast.id);
 
   const handleClose = useCallback(() => {
     setIsExiting(true);
-    setTimeout(() => onClose(toast.id), 200);
-  }, [onClose, toast.id]);
+    setTimeout(() => onClose(toastIdRef.current), TOAST.EXIT_ANIMATION_MS);
+  }, [onClose]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -63,28 +67,27 @@ function Toast({ toast, onClose }: ToastProps) {
 
   return (
     <div
-      className={`
-        relative overflow-hidden
-        flex items-start gap-3 p-4 rounded-lg border shadow-lg
-        ${styles[toast.type]}
-        ${isExiting ? 'toast-exit' : 'toast-enter'}
-      `}
+      className={cn(
+        "relative overflow-hidden flex items-start gap-3 p-4 rounded-lg border shadow-lg",
+        styles[toast.type],
+        isExiting ? "toast-exit" : "toast-enter"
+      )}
       role="alert"
       aria-live="polite"
     >
-      <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${iconStyles[toast.type]}`} />
+      <Icon className={cn("w-5 h-5 flex-shrink-0 mt-0.5", iconStyles[toast.type])} />
       <p className="flex-1 text-sm font-medium leading-relaxed">{toast.message}</p>
       <button
         onClick={handleClose}
         className="flex-shrink-0 p-1 rounded-md hover:bg-black/10 transition-colors"
-        aria-label="Fechar notificacao"
+        aria-label="Fechar notificação"
       >
         <X className="w-4 h-4" />
       </button>
       {/* Progress bar */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/5">
         <div
-          className={`h-full ${progressStyles[toast.type]}`}
+          className={cn("h-full", progressStyles[toast.type])}
           style={{
             animation: `progress ${duration}ms linear forwards`,
           }}
@@ -114,7 +117,7 @@ export function useToast() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const addToast = (type: ToastType, message: string, duration?: number) => {
-    const id = Date.now().toString();
+    const id = crypto.randomUUID();
     setToasts((prev) => [...prev, { id, type, message, duration }]);
   };
 

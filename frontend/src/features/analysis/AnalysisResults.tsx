@@ -10,8 +10,17 @@ import {
   Info,
 } from "lucide-react";
 import { Button, Card } from "@/components";
+import { cn } from "@/lib/utils";
 import { VALIDATION } from "@/constants/validation";
-import type { AnalysisResult } from "./types";
+import type { AnalysisResult, EngagementMoment, PlaybookSuggestion } from "@/types";
+
+type ImpactLevel = EngagementMoment["impactLevel"];
+
+const IMPACT_LABELS: Record<ImpactLevel, { label: string; style: string }> = {
+  high: { label: "Alto", style: "bg-green-100 text-green-800" },
+  medium: { label: "Médio", style: "bg-amber-100 text-amber-800" },
+  low: { label: "Baixo", style: "bg-gray-100 text-gray-800" },
+};
 
 interface AnalysisResultsProps {
   result: AnalysisResult;
@@ -88,9 +97,9 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
           </div>
         ) : (
         <div className="space-y-4">
-          {engagementMoments.map((moment, index) => (
+          {engagementMoments.map((moment) => (
             <div
-              key={index}
+              key={`engagement-${moment.quote.slice(0, 30)}`}
               className="flex items-start gap-4 p-4 bg-green-50 rounded-lg border border-green-200"
             >
               <MessageSquare className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -98,15 +107,12 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
                 <p className="font-medium text-gray-900">{moment.quote}</p>
                 <p className="mt-1 text-sm text-gray-600">{moment.context}</p>
                 <span
-                  className={`inline-block mt-2 px-2 py-0.5 text-xs font-medium rounded-full ${
-                    moment.impactLevel === 'high'
-                      ? 'bg-green-100 text-green-800'
-                      : moment.impactLevel === 'medium'
-                      ? 'bg-amber-100 text-amber-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
+                  className={cn(
+                    "inline-block mt-2 px-2 py-0.5 text-xs font-medium rounded-full",
+                    IMPACT_LABELS[moment.impactLevel].style
+                  )}
                 >
-                  Impacto {moment.impactLevel === 'high' ? 'Alto' : moment.impactLevel === 'medium' ? 'Médio' : 'Baixo'}
+                  Impacto {IMPACT_LABELS[moment.impactLevel].label}
                 </span>
               </div>
             </div>
@@ -127,9 +133,9 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
           </div>
         ) : (
         <div className="space-y-4">
-          {effectiveQuestions.map((question, index) => (
+          {effectiveQuestions.map((question) => (
             <div
-              key={index}
+              key={`question-${question.question.slice(0, 30)}`}
               className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200"
             >
               <HelpCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -161,28 +167,28 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
           </div>
         ) : (
         <div className="space-y-4">
-          {objections.map((objection, index) => (
-            <div
-              key={index}
-              className="p-4 bg-amber-50 rounded-lg border border-amber-200"
-            >
-              <div className="flex items-start gap-4">
-                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">{objection.objection}</p>
+          {objections.map((objection) => {
+            const invalidResponses = objection.unsuccessfulResponses.filter(r => r?.trim());
+            return (
+              <div
+                key={`objection-${objection.objection.slice(0, 30)}`}
+                className="p-4 bg-amber-50 rounded-lg border border-amber-200"
+              >
+                <div className="flex items-start gap-4">
+                  <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">{objection.objection}</p>
 
-                  <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                    <p className="text-xs font-medium text-green-800 uppercase tracking-wide">
-                      Resposta Recomendada
-                    </p>
-                    <p className="mt-1 text-sm text-gray-700">
-                      {objection.recommendedResponse}
-                    </p>
-                  </div>
+                    <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                      <p className="text-xs font-medium text-green-800 uppercase tracking-wide">
+                        Resposta Recomendada
+                      </p>
+                      <p className="mt-1 text-sm text-gray-700">
+                        {objection.recommendedResponse}
+                      </p>
+                    </div>
 
-                  {(() => {
-                    const invalidResponses = objection.unsuccessfulResponses.filter(r => r?.trim());
-                    return invalidResponses.length > 0 && (
+                    {invalidResponses.length > 0 && (
                       <div className="mt-2 p-3 bg-red-50 rounded-lg border border-red-200">
                         <p className="text-xs font-medium text-red-800 uppercase tracking-wide">
                           Evitar
@@ -190,17 +196,17 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
                         <ul className="mt-1 text-sm text-gray-700 list-disc list-inside">
                           {invalidResponses
                             .slice(0, VALIDATION.MAX_UNSUCCESSFUL_RESPONSES)
-                            .map((resp, i) => (
-                            <li key={i}>{resp}</li>
+                            .map((resp) => (
+                            <li key={`resp-${resp.slice(0, 30)}`}>{resp}</li>
                           ))}
                         </ul>
                       </div>
-                    );
-                  })()}
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         )}
       </Card>
@@ -218,11 +224,11 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
         ) : (
         <div className="space-y-4">
           {Object.entries(
-            playbookSuggestions.reduce((acc, suggestion) => {
+            playbookSuggestions.reduce<Record<string, PlaybookSuggestion[]>>((acc, suggestion) => {
               if (!acc[suggestion.section]) acc[suggestion.section] = [];
               acc[suggestion.section].push(suggestion);
               return acc;
-            }, {} as Record<string, typeof playbookSuggestions>)
+            }, {})
           ).map(([section, suggestions]) => (
             <div key={section} className="border border-gray-200 rounded-lg overflow-hidden">
               <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
@@ -234,8 +240,8 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
               <div className="divide-y divide-gray-100">
                 {suggestions
                   .slice(0, VALIDATION.MAX_PLAYBOOK_SUGGESTIONS_PER_SECTION)
-                  .map((suggestion, index) => (
-                    <div key={index} className="px-4 py-3">
+                  .map((suggestion) => (
+                    <div key={`suggestion-${section}-${suggestion.content.slice(0, 30)}`} className="px-4 py-3">
                       <p className="text-sm text-gray-900">{suggestion.content}</p>
                       <p className="mt-1 text-xs text-gray-500">{suggestion.basedOn}</p>
                     </div>

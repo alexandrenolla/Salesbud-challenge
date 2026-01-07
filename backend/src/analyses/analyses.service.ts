@@ -10,6 +10,7 @@ import {
   buildPrompt,
 } from "src/prompts/playbook.prompts";
 import { DEFAULT_LIMIT } from "src/utils/constants";
+import { extractErrorMessage, partitionByOutcome, findByIdOrThrow } from "src/utils/helpers";
 import { Outcome } from "./enums/outcome.enum";
 import { ImpactLevel } from "./enums/impact-level.enum";
 import {
@@ -162,8 +163,7 @@ export class AnalysesService {
   }
 
   async findOneById(id: string): Promise<AnalysisResponseDto> {
-    const analysis = await this.findEntityById(id);
-    return analysis;
+    return this.findEntityById(id);
   }
 
   async delete(id: string): Promise<void> {
@@ -172,19 +172,14 @@ export class AnalysesService {
   }
 
   private async findEntityById(id: string): Promise<Analysis> {
-    const analysis = await this.analysisRepository.findOne({ where: { id } });
-    if (!analysis) {
-      throw new NotFoundException(`Analysis with ID ${id} not found`);
-    }
-    return analysis;
+    return findByIdOrThrow(this.analysisRepository, id, "Analysis");
   }
 
   // 3-stage pipeline
   private async analyzeTranscripts(transcripts: TranscriptInput[]): Promise<AnalysisResult> {
     this.logger.log(`Starting analysis with ${transcripts.length} transcripts`);
 
-    const wonTranscripts = transcripts.filter((t) => t.outcome === Outcome.WON);
-    const lostTranscripts = transcripts.filter((t) => t.outcome === Outcome.LOST);
+    const { won: wonTranscripts, lost: lostTranscripts } = partitionByOutcome(transcripts);
 
     this.logger.log(`Split: ${wonTranscripts.length} won, ${lostTranscripts.length} lost`);
 
@@ -228,7 +223,7 @@ export class AnalysesService {
         extractions.push(result.value);
       } else {
         this.logger.warn(
-          `Failed to extract from transcript ${index}: ${result.reason instanceof Error ? result.reason.message : "Unknown error"}`,
+          `Failed to extract from transcript ${index}: ${extractErrorMessage(result.reason)}`,
         );
       }
     });
@@ -267,8 +262,9 @@ export class AnalysesService {
     comparativeAnalysis: ComparativeResult,
     playbookContent: PlaybookContent,
   ): AnalysisResult {
-    const wonCount = transcripts.filter((t) => t.outcome === Outcome.WON).length;
-    const lostCount = transcripts.filter((t) => t.outcome === Outcome.LOST).length;
+    const { won, lost } = partitionByOutcome(transcripts);
+    const wonCount = won.length;
+    const lostCount = lost.length;
 
     // Map engagement moments from comparative analysis
     const engagementMoments: EngagementMoment[] = comparativeAnalysis.engagement_triggers.map(

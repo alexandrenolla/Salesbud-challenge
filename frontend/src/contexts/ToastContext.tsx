@@ -1,5 +1,6 @@
 import { createContext, useContext, ReactNode } from "react";
-import { ToastContainer, useToastHook } from "@/components";
+import { ToastContainer } from "@/components";
+import { useToast as useToastState } from "@/components/Toast";
 
 interface ToastContextType {
   success: (message: string) => void;
@@ -11,7 +12,7 @@ interface ToastContextType {
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const { toasts, removeToast, success, error, warning, info } = useToastHook();
+  const { toasts, removeToast, success, error, warning, info } = useToastState();
 
   return (
     <ToastContext.Provider value={{ success, error, warning, info }}>

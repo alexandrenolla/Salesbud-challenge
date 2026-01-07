@@ -5,10 +5,10 @@ import { ThrottlerModule, ThrottlerGuard } from "@nestjs/throttler";
 import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 
 import ormconfig from "../ormconfig";
-import { AllExceptionsFilter } from "./exceptions/all-exceptions.filter"; 
+import { AllExceptionsFilter } from "./exceptions/all-exceptions.filter";
 import { LlmModule } from "./llm/llm.module";
 import { AnalysesModule } from "./analyses/analyses.module";
-import { UploadsModule } from "./uploads/uploads.module";
+import { BatchUploadsModule } from "./batch-uploads/batch-uploads.module";
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { UploadsModule } from "./uploads/uploads.module";
     }),
     LlmModule,
     AnalysesModule,
-    UploadsModule,
+    BatchUploadsModule,
   ],
   providers: [
     {
