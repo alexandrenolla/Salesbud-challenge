@@ -5,6 +5,7 @@ import { Subject, Observable, map, finalize } from "rxjs";
 import { LlmService } from "src/llm/llm.service";
 import { OutcomeDetectorService } from "src/outcome-detector/outcome-detector.service";
 import { AnalysesService } from "src/analyses/analyses.service";
+import { FilesService } from "src/files/files.service";
 import {
   MIN_FILE_CONTENT_LENGTH,
   MIN_TRANSCRIPTS_COUNT,
@@ -12,9 +13,12 @@ import {
   BATCH_CONCURRENCY_LIMIT,
 } from "src/utils/constants";
 import { isAudioFile, retryWithBackoff, findByIdOrThrow } from "src/utils/helpers";
-import { BatchJob } from "./entities";
-import { BatchStatus, BatchStage } from "./enums";
-import { BatchFileInfoDto, BatchProgressEventDto, BatchUploadResponseDto } from "./dto";
+import { BatchProgressEventDto } from "./dto/batch-progress-event.dto";
+import { BatchJob } from "./entities/batch-job.entity";
+import { BatchUploadResponseDto } from "./dto/batch-upload-response.dto";
+import { BatchFileInfoDto } from "./dto/batch-file-info.dto";
+import { BatchStatus } from "./enums/batch-status.enum";
+import { BatchStage } from "./enums/batch-stage.enum";
 
 interface TranscriptData {
   content: string;
@@ -33,6 +37,7 @@ export class BatchUploadsService {
     private readonly llmService: LlmService,
     private readonly outcomeDetectorService: OutcomeDetectorService,
     private readonly analysesService: AnalysesService,
+    private readonly filesService: FilesService,
   ) {}
 
   async createJob(files: Express.Multer.File[]): Promise<BatchUploadResponseDto> {
@@ -63,12 +68,41 @@ export class BatchUploadsService {
 
     const savedJob = await this.batchJobRepository.save(job);
 
-    // Start processing asynchronously (fire-and-forget)
+    // Both threads run in parallel
+    // Thread 1: IA pipeline (transcription → analysis → playbook)
     void this.processJob(savedJob.id, files).catch((error) => {
       this.logger.error(`Job ${savedJob.id} failed: ${error instanceof Error ? error.message : String(error)}`);
     });
 
+    // Thread 2: File storage (non-blocking, doesn't delay analysis)
+    void this.persistFiles(savedJob.id, files).catch((error) => {
+      this.logger.error(`Job ${savedJob.id} file persistence failed: ${error instanceof Error ? error.message : String(error)}`);
+    });
+
     return this.mapToResponse(savedJob);
+  }
+
+  private async persistFiles(jobId: string, files: Express.Multer.File[]): Promise<void> {
+    const savedFiles = await Promise.all(
+      files.map((file) =>
+        this.filesService.create({
+          buffer: file.buffer,
+          originalFilename: file.originalname,
+          mimeType: file.mimetype,
+          batchJobId: jobId,
+        }),
+      ),
+    );
+
+    const job = await this.findJobById(jobId);
+    job.files = job.files.map((info, index) => ({
+      ...info,
+      fileId: savedFiles[index].id,
+      fileKey: savedFiles[index].key,
+    }));
+    await this.batchJobRepository.save(job);
+
+    this.logger.log(`Job ${jobId}: ${savedFiles.length} files persisted to storage`);
   }
 
   async getJobStatus(jobId: string): Promise<BatchUploadResponseDto> {
@@ -95,7 +129,6 @@ export class BatchUploadsService {
     const job = await this.findJobById(jobId);
 
     try {
-      // Update status to processing
       job.status = BatchStatus.PROCESSING;
       job.currentStage = BatchStage.UPLOADING;
       await this.batchJobRepository.save(job);
@@ -116,7 +149,6 @@ export class BatchUploadsService {
       // Stage 3 & 4: Analyze and generate playbook
       const analysis = await this.analyzeTranscripts(jobId, job, transcriptsWithOutcome);
 
-      // Complete
       job.status = BatchStatus.COMPLETED;
       job.currentStage = BatchStage.DONE;
       job.analysisId = analysis.id;
@@ -194,7 +226,6 @@ export class BatchUploadsService {
             );
           }
 
-          // Update file info
           job.files[fileIndex].processed = true;
           job.processedFiles++;
           await this.batchJobRepository.save(job);
@@ -274,7 +305,6 @@ export class BatchUploadsService {
       message: "Analisando padrões de vendas...",
     });
 
-    // Use the analyses service create method
     const analysis = await this.analysesService.create({
       transcripts: transcripts.map((t) => ({ content: t.content })),
     });

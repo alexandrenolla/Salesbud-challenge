@@ -1,0 +1,51 @@
+Amanda: Ricardo, boa tarde! Como você está?
+
+Ricardo: Boa tarde, Amanda. Na correria, mas bem. Vamos lá, me explica essa solução de vocês.
+
+Amanda: Claro. Em resumo: a gente usa IA pra gravar suas reuniões de vendas, transcrever automaticamente, e gerar insights sobre o que tá funcionando e o que não tá no seu processo comercial.
+
+Ricardo: Entendi. A gente já usa o Gong, você conhece?
+
+Amanda: Conheço sim. O Gong é uma referência no mercado americano. O que te fez buscar alternativas?
+
+Ricardo: Preço, basicamente. O Gong tá custando uma fortuna pra gente. Quase oito mil dólares por mês. E metade das features a gente nem usa.
+
+Amanda: Entendo. Esse é um feedback comum. O Gong é muito robusto mas o preço é proibitivo pra maioria das empresas brasileiras. A gente oferece as funcionalidades core por uma fração do preço.
+
+Ricardo: Quais funcionalidades vocês têm que se comparam?
+
+Amanda: Gravação automática de calls, transcrição em português com alta precisão, identificação de speakers, preenchimento de CRM, analytics de conversas, e dashboards de performance do time.
+
+Ricardo: E o que vocês não têm que o Gong tem?
+
+Amanda: Vou ser honesta. O Gong tem mais integrações prontas, tem funcionalidades de coaching mais avançadas, e o modelo de IA deles é mais maduro porque eles têm mais dados de treinamento. Mas pra noventa por cento dos casos de uso, a gente atende.
+
+Ricardo: Gostei da honestidade. E o preço?
+
+Amanda: Pro tamanho do seu time, que são vinte vendedores se não me engano, ficaria em torno de quatro mil reais por mês.
+
+Ricardo: Quatro mil reais contra oito mil dólares? Isso é tipo um décimo do preço.
+
+Amanda: É uma diferença grande. E a gente tem suporte local, em português, horário comercial brasileiro. Com o Gong você depende do suporte nos EUA.
+
+Ricardo: Isso já me incomodou algumas vezes. Quando dá problema é difícil resolver rápido.
+
+Amanda: Imagino. Outro ponto: a gente integra nativamente com os CRMs mais usados no Brasil. Hubspot, Pipedrive, RD Station CRM, Ploomes. O Gong às vezes tem atrito com essas integrações.
+
+Ricardo: A gente usa Pipedrive. Funciona bem?
+
+Amanda: Funciona muito bem. É uma das nossas integrações mais maduras. Posso te mostrar na demo se quiser.
+
+Ricardo: Quero sim. Mas antes, me fala: vocês têm cliente do nosso tamanho? A gente faz umas mil reuniões por mês.
+
+Amanda: Temos sim. A TechSolutions, que é do mesmo setor de vocês, processa mais de mil e duzentas reuniões por mês com a gente. Posso passar o contato do head de vendas deles como referência.
+
+Ricardo: Seria bom. Vou querer falar com eles antes de decidir.
+
+Amanda: Claro, vou te mandar o contato. Enquanto isso, que tal agendarmos a demo técnica pro seu time de ops ver a integração com Pipedrive?
+
+Ricardo: Pode ser. Semana que vem funciona. Vou pedir pro meu RevOps participar.
+
+Amanda: Perfeito. Te mando as opções de horário. Obrigada, Ricardo!
+
+Ricardo: Valeu, Amanda. Até semana que vem.

@@ -1,0 +1,47 @@
+Thiago: Oi Carla, tudo bem? Vi que você agendou a demo depois de baixar nosso ebook sobre produtividade em vendas. O que te chamou atenção?
+
+Carla: Oi Thiago! Então, a parte de preenchimento automático de CRM me interessou muito. A gente sofre demais com isso aqui.
+
+Thiago: Me conta mais. Como é o processo de vocês hoje depois de uma reunião de vendas?
+
+Carla: O vendedor faz a call, depois tem que abrir o Hubspot, preencher as notas, atualizar o estágio do deal, registrar próximos passos... Leva uns vinte minutos por reunião.
+
+Thiago: E quantas reuniões cada vendedor faz por dia em média?
+
+Carla: Uns quatro a cinco. Então estamos falando de quase duas horas por dia só preenchendo CRM.
+
+Thiago: Exatamente o problema que a gente resolve. Nossa IA entra na reunião, grava, transcreve, e preenche todos esses campos automaticamente no Hubspot. O vendedor só revisa e confirma.
+
+Carla: Mas como a IA sabe o que preencher? Cada empresa tem campos diferentes no CRM.
+
+Thiago: Boa pergunta. A gente faz uma configuração inicial onde mapeamos seus campos customizados. A IA aprende o que extrair de cada conversa. Por exemplo, se você tem um campo "dor principal do cliente", ela identifica isso na transcrição e preenche.
+
+Carla: Interessante. E funciona com calls de WhatsApp também? Nossos SDRs fazem muita qualificação por áudio no WhatsApp.
+
+Thiago: Funciona sim. A gente integra com WhatsApp Business e captura os áudios. É um diferencial nosso porque muita ferramenta só faz reunião de Zoom ou Meet.
+
+Carla: Isso é importante pra gente. E quanto aos insights? Vi que vocês falam de identificar gaps no processo comercial.
+
+Thiago: Sim, a gente analisa todas as conversas e identifica padrões. Por exemplo: quais objeções aparecem mais, em que momento da call os deals que fecham se diferenciam dos que perdem, quais perguntas geram mais engajamento do cliente.
+
+Carla: Isso seria muito útil pro nosso head de vendas. Ele vive pedindo pros vendedores gravarem calls pra ele ouvir, mas ninguém faz.
+
+Thiago: Com a gente fica automático. Ele consegue ver um dashboard com as métricas de todas as calls sem precisar ouvir uma por uma. E se quiser se aprofundar, tem a transcrição completa.
+
+Carla: E o preço? A gente é uma startup, temos doze vendedores.
+
+Thiago: Pra doze usuários, nosso plano fica em dois mil e quatrocentos por mês. Dá duzentos por vendedor.
+
+Carla: Não é barato, mas se realmente economizar duas horas por dia de cada um, faz sentido. Isso dá vinte e quatro horas por dia de trabalho recuperado pro time.
+
+Thiago: Exatamente. E mais do que o tempo, a qualidade do dado no CRM melhora muito. Vendedor preenchendo com pressa erra, esquece informação. A IA pega tudo.
+
+Carla: Faz sentido. Deixa eu conversar com meu co-founder. A gente pode fazer um piloto?
+
+Thiago: Pode sim. Oferecemos quatorze dias grátis com onboarding completo. Se não funcionar, cancela sem custo.
+
+Carla: Perfeito. Vou falar com ele hoje e te retorno amanhã.
+
+Thiago: Combinado, Carla. Obrigado pela conversa!
+
+Carla: Obrigada você, Thiago. Até mais!

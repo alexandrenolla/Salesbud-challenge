@@ -1,0 +1,43 @@
+Lucas: Eduardo, boa tarde! Como vai?
+
+Eduardo: Boa tarde, Lucas. Vou bem. Então, me conta sobre essa ferramenta de IA pra vendas de vocês.
+
+Lucas: Com prazer. A gente ajuda times de vendas a serem mais produtivos automatizando o preenchimento de CRM e gerando insights sobre as conversas com clientes.
+
+Eduardo: Entendi. A gente já avaliou algumas ferramentas assim no passado. No fim, decidimos não implementar.
+
+Lucas: Posso perguntar o que pesou na decisão?
+
+Eduardo: Basicamente, a gente sentiu que ia criar mais uma ferramenta pro vendedor ter que lidar. Já temos CRM, já temos ferramenta de cadência, já temos o Slack. Mais uma coisa ia gerar resistência.
+
+Lucas: Entendo a preocupação. No nosso caso, a ideia é justamente reduzir trabalho, não adicionar. O vendedor não precisa fazer nada diferente. A IA entra na reunião automaticamente, grava, e preenche o CRM sozinha.
+
+Eduardo: Mas o vendedor não precisa revisar o que a IA preencheu?
+
+Lucas: Idealmente sim, uma revisão rápida. Mas muitos clientes nossos nem fazem isso porque a precisão é alta.
+
+Eduardo: Sei. Mas me preocupa a adoção. Meu time é meio resistente a mudanças.
+
+Lucas: É uma preocupação válida. A gente oferece um programa de change management junto com a implementação. Treinamos o time, mostramos o benefício, acompanhamos as primeiras semanas.
+
+Eduardo: Mesmo assim, acho que não é o momento. A gente acabou de trocar de CRM, o time ainda tá se adaptando. Colocar mais uma ferramenta agora ia ser demais.
+
+Lucas: Faz sentido. Vocês trocaram pra qual CRM?
+
+Eduardo: Migramos pro Hubspot há três meses.
+
+Lucas: Entendi. Realmente, empilhar mudanças não é uma boa ideia. Quando você acha que o time vai estar mais estabilizado?
+
+Eduardo: Provavelmente só no segundo semestre.
+
+Lucas: Ok. Faz sentido a gente conversar de novo lá pra agosto então?
+
+Eduardo: Pode ser. Mas não prometo nada. Vai depender de como estiver a operação.
+
+Lucas: Claro, sem compromisso. Vou te mandar um material sobre nossos cases pra você ir se familiarizando. Se mudar o cenário antes, me avisa.
+
+Eduardo: Tá bom. Obrigado, Lucas.
+
+Lucas: Eu que agradeço. Boa sorte com a adaptação ao Hubspot!
+
+Eduardo: Valeu. Até mais.

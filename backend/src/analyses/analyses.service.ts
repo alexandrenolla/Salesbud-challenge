@@ -7,25 +7,26 @@ import {
   EXTRACTION_PROMPT,
   COMPARATIVE_ANALYSIS_PROMPT,
   PLAYBOOK_GENERATION_PROMPT,
-  buildPrompt,
 } from "src/prompts/playbook.prompts";
 import { DEFAULT_LIMIT } from "src/utils/constants";
-import { extractErrorMessage, partitionByOutcome, findByIdOrThrow } from "src/utils/helpers";
+import { extractErrorMessage, partitionByOutcome, findByIdOrThrow, buildPrompt } from "src/utils/helpers";
 import { Outcome } from "./enums/outcome.enum";
 import { ImpactLevel } from "./enums/impact-level.enum";
 import {
   Analysis,
-  TranscriptInput,
-  EngagementMoment,
-  EffectiveQuestion,
-  ObjectionAnalysis,
-  PlaybookSuggestion,
+  TranscriptInputDto,
+  EngagementMomentDto,
+  EffectiveQuestionDto,
+  ObjectionAnalysisDto,
+  PlaybookSuggestionDto,
 } from "./entities/analysis.entity";
 import { CreateAnalysisDto } from "./dto/create-analysis.dto";
 import { AnalysisResponseDto } from "./dto/analysis-response.dto";
 
 // Result type for the analysis pipeline
 type AnalysisResult = Omit<Analysis, "id" | "createdAt" | "updatedAt" | "transcripts">;
+
+const asArray = <T>(value: T[] | undefined | null): T[] => Array.isArray(value) ? value : [];
 
 // Intermediate types for LLM responses
 interface ExtractionResult {
@@ -135,7 +136,7 @@ export class AnalysesService {
       };
     });
 
-    const transcripts: TranscriptInput[] = await Promise.all(transcriptPromises);
+    const transcripts: TranscriptInputDto[] = await Promise.all(transcriptPromises);
 
     this.logger.log(
       `Outcomes detected: ${transcripts.filter((t) => t.outcome === Outcome.WON).length} won, ${transcripts.filter((t) => t.outcome === Outcome.LOST).length} lost`,
@@ -176,7 +177,7 @@ export class AnalysesService {
   }
 
   // 3-stage pipeline
-  private async analyzeTranscripts(transcripts: TranscriptInput[]): Promise<AnalysisResult> {
+  private async analyzeTranscripts(transcripts: TranscriptInputDto[]): Promise<AnalysisResult> {
     this.logger.log(`Starting analysis with ${transcripts.length} transcripts`);
 
     const { won: wonTranscripts, lost: lostTranscripts } = partitionByOutcome(transcripts);
@@ -205,7 +206,7 @@ export class AnalysesService {
     return this.formatResult(transcripts, comparativeAnalysis, playbookContent);
   }
 
-  private async extractFromTranscripts(transcripts: TranscriptInput[]): Promise<ExtractionResult[]> {
+  private async extractFromTranscripts(transcripts: TranscriptInputDto[]): Promise<ExtractionResult[]> {
     const extractionPromises = transcripts.map(async (transcript) => {
       const prompt = buildPrompt(EXTRACTION_PROMPT, {
         transcript: transcript.content,
@@ -258,7 +259,7 @@ export class AnalysesService {
   }
 
   private formatResult(
-    transcripts: TranscriptInput[],
+    transcripts: TranscriptInputDto[],
     comparativeAnalysis: ComparativeResult,
     playbookContent: PlaybookContent,
   ): AnalysisResult {
@@ -267,7 +268,7 @@ export class AnalysesService {
     const lostCount = lost.length;
 
     // Map engagement moments from comparative analysis
-    const engagementMoments: EngagementMoment[] = comparativeAnalysis.engagement_triggers.map(
+    const engagementMoments: EngagementMomentDto[] = asArray(comparativeAnalysis.engagement_triggers).map(
       (trigger) => ({
         quote: trigger.trigger,
         context: trigger.how_to_replicate,
@@ -277,54 +278,55 @@ export class AnalysesService {
     );
 
     // Map effective questions
-    const effectiveQuestions: EffectiveQuestion[] = comparativeAnalysis.effective_questions.map(
+    const discoveryQuestions = asArray(playbookContent.discovery_questions);
+    const effectiveQuestions: EffectiveQuestionDto[] = asArray(comparativeAnalysis.effective_questions).map(
       (eq) => ({
         question: eq.question,
         avgResponseTime: "N/A",
         successRate: eq.success_rate,
         suggestedTiming:
-          playbookContent.discovery_questions.find((dq) => dq.question === eq.question)?.timing ||
+          discoveryQuestions.find((dq) => dq.question === eq.question)?.timing ||
           "Durante discovery",
       }),
     );
 
     // Map objections
-    const objections: ObjectionAnalysis[] = comparativeAnalysis.critical_objections.map((co) => {
-      const handling = playbookContent.objection_handling.find(
-        (oh) => oh.objection === co.objection,
-      );
+    const objectionHandling = asArray(playbookContent.objection_handling);
+    const objections: ObjectionAnalysisDto[] = asArray(comparativeAnalysis.critical_objections).map((co) => {
+      const handling = objectionHandling.find((oh) => oh.objection === co.objection);
       return {
         objection: co.objection,
         frequency: 1,
-        successfulResponses: co.successful_responses,
-        unsuccessfulResponses: co.failed_responses,
-        recommendedResponse: handling?.recommended_response || co.successful_responses[0] || "",
+        successfulResponses: asArray(co.successful_responses),
+        unsuccessfulResponses: asArray(co.failed_responses),
+        recommendedResponse: handling?.recommended_response || asArray(co.successful_responses)[0] || "",
       };
     });
 
     // Map playbook suggestions from multiple sources
-    const playbookSuggestions: PlaybookSuggestion[] = [
+    const openingScript = playbookContent.opening_script || { script: "", key_elements: [] };
+    const playbookSuggestions: PlaybookSuggestionDto[] = [
       {
         section: "Abertura",
-        content: playbookContent.opening_script.script,
-        basedOn: `Key elements: ${playbookContent.opening_script.key_elements.join(", ")}`,
+        content: openingScript.script || "",
+        basedOn: `Key elements: ${asArray(openingScript.key_elements).join(", ")}`,
       },
-      ...playbookContent.discovery_questions.map((dq) => ({
+      ...discoveryQuestions.map((dq) => ({
         section: "Discovery",
         content: `${dq.question} - ${dq.purpose}`,
         basedOn: `Timing: ${dq.timing}, Follow-up: ${dq.follow_up}`,
       })),
-      ...playbookContent.engagement_tactics.map((et) => ({
+      ...asArray(playbookContent.engagement_tactics).map((et) => ({
         section: "Engajamento",
         content: et.tactic,
         basedOn: `Quando usar: ${et.when_to_use}. Exemplo: ${et.example}`,
       })),
-      ...playbookContent.closing_checklist.map((cc) => ({
+      ...asArray(playbookContent.closing_checklist).map((cc) => ({
         section: "Fechamento",
         content: cc.item,
         basedOn: cc.why,
       })),
-      ...playbookContent.red_flags.map((rf) => ({
+      ...asArray(playbookContent.red_flags).map((rf) => ({
         section: "Alertas",
         content: `${rf.flag}: ${rf.what_it_means}`,
         basedOn: `Como recuperar: ${rf.how_to_recover}`,

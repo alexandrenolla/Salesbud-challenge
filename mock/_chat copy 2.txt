@@ -1,0 +1,39 @@
+Bruno: Oi Daniela, tudo bem? Obrigado por aceitar a reunião!
+
+Daniela: Oi Bruno. Tudo bem. Mas já vou sendo direta: a gente tá só pesquisando por enquanto. Não tenho budget aprovado pra esse tipo de ferramenta esse trimestre.
+
+Bruno: Entendi, sem problemas. Quer me contar o que motivou a pesquisa mesmo assim?
+
+Daniela: Meu CEO viu uma apresentação sobre revenue intelligence num evento e ficou empolgado. Pediu pra eu mapear o mercado.
+
+Bruno: E o que especificamente chamou a atenção dele?
+
+Daniela: A parte de prever quais deals vão fechar e quais não. Ele quer ter mais previsibilidade no forecast.
+
+Bruno: Faz sentido. Nossa plataforma faz isso analisando os sinais das conversas. Quando o cliente demonstra certos comportamentos, a probabilidade de fechamento aumenta. A IA aprende esses padrões.
+
+Daniela: Parece interessante, mas como eu disse, não tenho budget agora.
+
+Bruno: Entendo. E quando seria o próximo ciclo de orçamento?
+
+Daniela: Só em julho. Faltam uns seis meses.
+
+Bruno: Ok. E vocês já usam alguma ferramenta de gravação de calls hoje?
+
+Daniela: A gente usa o Fireflies pra transcrever, mas é bem básico. Não tem essa parte de analytics.
+
+Bruno: Entendi. O Fireflies é bom pra transcrição mas realmente não tem a camada de inteligência. Se quiser, posso te mandar um comparativo mostrando a diferença.
+
+Daniela: Pode mandar. Vou guardar pro momento certo.
+
+Bruno: E faz sentido a gente conversar de novo mais perto de julho? Posso te procurar em maio pra retomar.
+
+Daniela: Pode me procurar, mas não garanto nada. Vai depender de como estiver o caixa da empresa.
+
+Bruno: Claro, entendo. Vou te adicionar no meu CRM pra fazer follow-up em maio então. Enquanto isso, qualquer dúvida pode me chamar.
+
+Daniela: Tá bom, Bruno. Obrigada pela compreensão.
+
+Bruno: Eu que agradeço. Até mais, Daniela!
+
+Daniela: Até.

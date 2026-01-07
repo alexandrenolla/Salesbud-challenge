@@ -22,7 +22,7 @@ import { Observable } from "rxjs";
 import { MAX_TRANSCRIPTS_COUNT } from "src/utils/constants";
 import { ValidateBatchUploadsPipe } from "./pipes/validate-batch-uploads.pipe";
 import { BatchUploadsService } from "./batch-uploads.service";
-import { BatchUploadResponseDto, BatchProgressEventDto } from "./dto";
+import { BatchUploadResponseDto } from "./dto/batch-upload-response.dto";
 
 @Controller({ path: "batch-uploads", version: "1" })
 @ApiTags("batch-uploads")

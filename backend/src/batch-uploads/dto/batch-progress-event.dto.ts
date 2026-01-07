@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { BatchStage } from "../enums";
+import { BatchStage } from "../enums/batch-stage.enum";
 
 export class BatchProgressEventDto {
   @ApiProperty({ enum: BatchStage, example: BatchStage.TRANSCRIBING, description: "Current processing stage" })

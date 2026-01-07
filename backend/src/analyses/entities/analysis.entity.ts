@@ -5,8 +5,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Outcome } from "../enums/outcome.enum";
 import { ImpactLevel } from "../enums/impact-level.enum";
 
-// Classes for JSONB columns
-export class TranscriptInput {
+export class TranscriptInputDto {
   @IsString()
   @ApiProperty({ description: "Meeting transcript content" })
   content: string;
@@ -24,7 +23,7 @@ export class TranscriptInput {
   reason: string;
 }
 
-export class AnalysisSummary {
+export class AnalysisSummaryDto {
   @IsNumber()
   @ApiProperty({ description: "Total meetings analyzed" })
   totalMeetings: number;
@@ -42,7 +41,7 @@ export class AnalysisSummary {
   analysisDate: string;
 }
 
-export class EngagementMoment {
+export class EngagementMomentDto {
   @IsString()
   @ApiProperty({ description: "Quote excerpt" })
   quote: string;
@@ -60,7 +59,7 @@ export class EngagementMoment {
   impactLevel: ImpactLevel;
 }
 
-export class EffectiveQuestion {
+export class EffectiveQuestionDto {
   @IsString()
   @ApiProperty({ description: "The question" })
   question: string;
@@ -78,7 +77,7 @@ export class EffectiveQuestion {
   suggestedTiming: string;
 }
 
-export class ObjectionAnalysis {
+export class ObjectionAnalysisDto {
   @IsString()
   @ApiProperty({ description: "The objection" })
   objection: string;
@@ -102,7 +101,7 @@ export class ObjectionAnalysis {
   recommendedResponse: string;
 }
 
-export class PlaybookSuggestion {
+export class PlaybookSuggestionDto {
   @IsString()
   @ApiProperty({ description: "Section name" })
   section: string;
@@ -130,39 +129,36 @@ export class Analysis {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @ApiProperty({ description: "Analyzed transcripts", type: [TranscriptInput] })
+  @ApiProperty({ description: "Analyzed transcripts", type: [TranscriptInputDto] })
   @Column({ type: "jsonb" })
   @ValidateNested({ each: true })
-  @Type(() => TranscriptInput)
-  transcripts: TranscriptInput[];
+  @Type(() => TranscriptInputDto)
+  transcripts: TranscriptInputDto[];
 
-  @ApiProperty({ description: "Analysis summary", type: AnalysisSummary })
+  @ApiProperty({ description: "Analysis summary", type: AnalysisSummaryDto })
   @Column({ type: "jsonb" })
   @ValidateNested()
-  @Type(() => AnalysisSummary)
-  summary: AnalysisSummary;
+  @Type(() => AnalysisSummaryDto)
+  summary: AnalysisSummaryDto;
 
-  @ApiProperty({ description: "Identified engagement moments", type: [EngagementMoment] })
+  @ApiProperty({ description: "Identified engagement moments", type: [EngagementMomentDto] })
   @Column({ type: "jsonb", name: "engagement_moments" })
   @ValidateNested({ each: true })
-  @Type(() => EngagementMoment)
-  engagementMoments: EngagementMoment[];
-
-  @ApiProperty({ description: "Identified effective questions", type: [EffectiveQuestion] })
+  @Type(() => EngagementMomentDto)
+  engagementMoments: EngagementMomentDto[];   
+  @ApiProperty({ description: "Identified effective questions", type: [EffectiveQuestionDto] })
   @Column({ type: "jsonb", name: "effective_questions" })
   @ValidateNested({ each: true })
-  @Type(() => EffectiveQuestion)
-  effectiveQuestions: EffectiveQuestion[];
-
-  @ApiProperty({ description: "Objections and responses", type: [ObjectionAnalysis] })
+  @Type(() => EffectiveQuestionDto)
+  effectiveQuestions: EffectiveQuestionDto[];
+  @ApiProperty({ description: "Objections and responses", type: [ObjectionAnalysisDto] })
   @Column({ type: "jsonb" })
   @ValidateNested({ each: true })
-  @Type(() => ObjectionAnalysis)
-  objections: ObjectionAnalysis[];
-
-  @ApiProperty({ description: "Playbook suggestions", type: [PlaybookSuggestion] })
+  @Type(() => ObjectionAnalysisDto)
+  objections: ObjectionAnalysisDto[];
+  @ApiProperty({ description: "Playbook suggestions", type: [PlaybookSuggestionDto] })
   @Column({ type: "jsonb", name: "playbook_suggestions" })
   @ValidateNested({ each: true })
-  @Type(() => PlaybookSuggestion)
-  playbookSuggestions: PlaybookSuggestion[];
+  @Type(() => PlaybookSuggestionDto)
+  playbookSuggestions: PlaybookSuggestionDto[];
 }

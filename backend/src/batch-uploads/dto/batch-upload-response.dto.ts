@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { BatchStatus, BatchStage } from "../enums";
 import { BatchFileInfoDto } from "./batch-file-info.dto";
+import { BatchStatus } from "../enums/batch-status.enum";
+import { BatchStage } from "../enums/batch-stage.enum";
 
 export class BatchUploadResponseDto {
   @ApiProperty({ example: "550e8400-e29b-41d4-a716-446655440000", description: "Job ID" })

@@ -18,7 +18,7 @@ export const ALL_ALLOWED_EXTENSIONS = [
 ];
 
 // LLM defaults
-export const DEFAULT_LLM_MODEL = "llama-3.3-70b-versatile";
+export const DEFAULT_LLM_MODEL = "claude-sonnet-4-20250514";
 export const DEFAULT_LLM_TEMPERATURE = 0.7;
 export const DEFAULT_LLM_MAX_TOKENS = 4096;
 

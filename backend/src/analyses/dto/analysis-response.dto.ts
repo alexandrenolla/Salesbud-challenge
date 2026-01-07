@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
-  TranscriptInput,
-  AnalysisSummary,
-  EngagementMoment,
-  EffectiveQuestion,
-  ObjectionAnalysis,
-  PlaybookSuggestion,
+  TranscriptInputDto,
+  AnalysisSummaryDto,
+  EngagementMomentDto,
+  EffectiveQuestionDto,
+  ObjectionAnalysisDto,
+  PlaybookSuggestionDto,
 } from "../entities/analysis.entity";
 
 export class AnalysisResponseDto {
@@ -16,20 +16,20 @@ export class AnalysisResponseDto {
   createdAt: Date;
 
   @ApiProperty({ description: "Analyzed transcripts" })
-  transcripts: TranscriptInput[];
+  transcripts: TranscriptInputDto[];
 
   @ApiProperty({ description: "Analysis summary" })
-  summary: AnalysisSummary;
+  summary: AnalysisSummaryDto;
 
   @ApiProperty({ description: "Identified engagement moments" })
-  engagementMoments: EngagementMoment[];
+  engagementMoments: EngagementMomentDto[];
 
   @ApiProperty({ description: "Identified effective questions" })
-  effectiveQuestions: EffectiveQuestion[];
+  effectiveQuestions: EffectiveQuestionDto[];
 
   @ApiProperty({ description: "Objections and responses" })
-  objections: ObjectionAnalysis[];
+  objections: ObjectionAnalysisDto[];
 
   @ApiProperty({ description: "Playbook suggestions" })
-  playbookSuggestions: PlaybookSuggestion[];
+  playbookSuggestions: PlaybookSuggestionDto[];
 }

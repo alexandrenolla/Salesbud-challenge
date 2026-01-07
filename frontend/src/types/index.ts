@@ -18,7 +18,7 @@ export interface EngagementMoment {
 
 export interface EffectiveQuestion {
   question: string;
-  successRate: number;
+  successRate: number | string;
   suggestedTiming: string;
 }
 

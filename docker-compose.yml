@@ -36,14 +36,17 @@ services:
       - TYPEORM_LOGGING=${TYPEORM_LOGGING}
       - TYPEORM_MIGRATION_TABLE=${TYPEORM_MIGRATION_TABLE}
       - TYPEORM_MIGRATION=${TYPEORM_MIGRATION}
-      - GROQ_API_KEY=${GROQ_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - LLM_MODEL=${LLM_MODEL}
       - THROTTLE_TTL=${THROTTLE_TTL}
       - THROTTLE_LIMIT=${THROTTLE_LIMIT}
       - ASSEMBLYAI_API_KEY=${ASSEMBLYAI_API_KEY}
+      - STORAGE_PATH=/app/storage
+      - STORAGE_BASE_URL=/api/v1/files
     volumes:
       - ./backend:/app
       - /app/node_modules
+      - file-storage:/app/storage
     depends_on:
       postgresql:
         condition: service_healthy
@@ -70,3 +73,4 @@ services:
 
 volumes:
   pgdata:
+  file-storage:

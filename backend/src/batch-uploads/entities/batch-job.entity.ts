@@ -11,8 +11,9 @@ import { ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Analysis } from "src/analyses/entities/analysis.entity";
-import { BatchStatus, BatchStage } from "../enums";
-import { BatchFileInfoDto } from "../dto";
+import { BatchFileInfoDto } from "../dto/batch-file-info.dto";
+import { BatchStatus } from "../enums/batch-status.enum";
+import { BatchStage } from "../enums/batch-stage.enum";
 
 @Entity({ name: "batch_jobs" })
 export class BatchJob {

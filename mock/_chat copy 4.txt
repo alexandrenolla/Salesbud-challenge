@@ -1,0 +1,47 @@
+Patrícia: Marcos, boa tarde! Que bom falar com você.
+
+Marcos: Boa tarde, Patrícia. Então, me fala dessa solução de vocês. Vi que é algo relacionado a gravar reuniões de vendas.
+
+Patrícia: Isso mesmo. A gente grava as reuniões do seu time, transcreve com IA, e gera insights sobre o processo comercial. Também preenchemos o CRM automaticamente.
+
+Marcos: Interessante. Quanto custa?
+
+Patrícia: Depende do tamanho do time. Quantos vendedores vocês têm?
+
+Marcos: Somos só cinco pessoas no comercial. Empresa pequena ainda.
+
+Patrícia: Pra cinco usuários, nosso plano fica em mil e duzentos por mês.
+
+Marcos: Mil e duzentos é bastante pra gente. A gente não gasta nem isso com o CRM inteiro.
+
+Patrícia: Entendo. Posso perguntar qual CRM vocês usam?
+
+Marcos: A gente usa o Pipedrive no plano básico. Paga uns trezentos reais por mês.
+
+Patrícia: E como vocês fazem hoje pra registrar o que acontece nas reuniões?
+
+Marcos: Eu peço pro vendedor escrever um resumo no próprio Pipedrive depois da call. Funciona razoavelmente bem.
+
+Patrícia: E você consegue ter visibilidade do que tá acontecendo nas calls? Sabe se o vendedor tá seguindo o pitch certo, tratando objeções bem?
+
+Marcos: Não tenho muita visibilidade não. Mas como somos poucos, eu converso com eles no dia a dia. Fico sabendo das coisas.
+
+Patrícia: Faz sentido. Quando o time é pequeno, dá pra acompanhar na conversa mesmo. Nossa ferramenta faz mais sentido pra times maiores onde o gestor não consegue acompanhar todo mundo.
+
+Marcos: Exatamente. Talvez quando a gente crescer faça mais sentido.
+
+Patrícia: Concordo. Vocês têm plano de expandir o time esse ano?
+
+Marcos: A ideia é contratar mais dois vendedores no segundo semestre, se bater as metas.
+
+Patrícia: Legal! Quando vocês chegarem em uns oito, dez vendedores, a necessidade de uma ferramenta assim vai ficar mais clara. Posso te procurar no segundo semestre pra retomar a conversa?
+
+Marcos: Pode procurar. Mas não garanto que vou ter budget.
+
+Patrícia: Sem problema. Vou te mandar um material sobre nossos cases pra você ir conhecendo. Se precisar de algo antes, estou à disposição.
+
+Marcos: Tá bom, Patrícia. Obrigado.
+
+Patrícia: Eu que agradeço. Sucesso nas metas!
+
+Marcos: Valeu. Até mais.

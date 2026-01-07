@@ -71,3 +71,15 @@ export async function findByIdOrThrow<T extends ObjectLiteral>(
   }
   return entity;
 }
+
+// Helper to replace placeholders
+export function buildPrompt(
+  template: string,
+  variables: Record<string, string>,
+): string {
+  let prompt = template;
+  for (const [key, value] of Object.entries(variables)) {
+    prompt = prompt.replace(new RegExp(`\\{${key}\\}`, "g"), value);
+  }
+  return prompt;
+}

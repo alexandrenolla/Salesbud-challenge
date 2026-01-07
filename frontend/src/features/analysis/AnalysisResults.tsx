@@ -144,7 +144,7 @@ export function AnalysisResults({ result, onReset }: AnalysisResultsProps) {
                 <div className="mt-2 flex items-center gap-4 text-sm text-gray-600">
                   <span className="flex items-center gap-1">
                     <TrendingUp className="w-4 h-4 text-green-500" />
-                    {question.successRate}% sucesso
+                    {question.successRate}
                   </span>
                   <span>Timing: {question.suggestedTiming}</span>
                 </div>

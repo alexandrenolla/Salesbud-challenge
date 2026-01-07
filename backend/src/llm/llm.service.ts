@@ -8,7 +8,7 @@ import {
   ServiceUnavailableException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import Groq from "groq-sdk";
+import Anthropic from "@anthropic-ai/sdk";
 import { AssemblyAI, TranscriptUtterance } from "assemblyai";
 import * as fs from "fs";
 import * as os from "os";
@@ -24,17 +24,17 @@ import { extractErrorMessage } from "src/utils/helpers";
 @Injectable()
 export class LlmService {
   private readonly logger = new Logger(LlmService.name);
-  private readonly client: Groq;
+  private readonly client: Anthropic;
   private readonly model: string;
   private readonly assemblyAI?: AssemblyAI;
 
   constructor(private readonly configService: ConfigService) {
-    const groqKey = process.env.GROQ_API_KEY;
-    if (!groqKey) {
-      throw new ServiceUnavailableException("GROQ_API_KEY is not configured");
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    if (!anthropicKey) {
+      throw new ServiceUnavailableException("ANTHROPIC_API_KEY is not configured");
     }
 
-    this.client = new Groq({ apiKey: groqKey });
+    this.client = new Anthropic({ apiKey: anthropicKey });
     this.model = process.env.LLM_MODEL || DEFAULT_LLM_MODEL;
 
     // AssemblyAI for transcription + speaker diarization
@@ -48,14 +48,14 @@ export class LlmService {
     const startTime = Date.now();
 
     try {
-      const completion = await this.client.chat.completions.create({
-        messages: [{ role: "user", content: prompt }],
+      const message = await this.client.messages.create({
         model: this.model,
-        temperature: DEFAULT_LLM_TEMPERATURE,
         max_tokens: DEFAULT_LLM_MAX_TOKENS,
+        messages: [{ role: "user", content: prompt }],
       });
 
-      const text = completion.choices[0]?.message?.content || "";
+      const textBlock = message.content.find((block) => block.type === "text");
+      const text = textBlock?.type === "text" ? textBlock.text : "";
       const duration = Date.now() - startTime;
       this.logger.log(`LLM response received in ${duration}ms`);
 
